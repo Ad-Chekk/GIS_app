@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>HTML Geolocation</h1>
+<p>Click the button to get your llcoordinates.</p>
+
+<button onclick="getLocation()">Try It</button>
+<p>hello</p>
+<p id="demo"></p>
+<button onclick="fetchData()">Fetch Data</button>
+    <p id="data"></p>
+<script>
+const x = document.getElementById("demo");
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+  x.innerHTML = "" + position.coords.latitude + 
+  ", " + position.coords.longitude;
+}
+
+function fetchData() { fetch('/custom-data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('data').innerText = 'Data from Plotly Dash: ' + JSON.stringify(data);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+         }
+</script>
+
+</body>
+</html>
+
