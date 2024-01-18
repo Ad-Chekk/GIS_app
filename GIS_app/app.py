@@ -1,25 +1,29 @@
-# app.py
-from dash import Dash, html, dcc, callback, Output, Input
-import json
+from dash import Dash, dcc, html, Input, Output, callback
 
-app = Dash(__name__)
+external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
-app.layout = html.Div([
-    html.H1("Hello from Plotly Dash 11Backgargargsend!"),
-    html.Button("Send Data", id="send-data-button"),
-    html.Div(id="output-data")
-])
+app = Dash(__name__, external_stylesheets=external_stylesheets)
 
-# Endpoint for providing data
-@app.callback(
-    Output("output-data", "children"),
-    [Input("send-data-button", "n_clicks")]
+app.layout = html.Div(
+    [
+        html.I("Try typing in input 1 & 2, and observe how debounce is impacting the callbacks. Press Enter and/or Tab key in Input 2 to cancel the delay"),
+        html.Br(),
+        dcc.Input(id="input1", type="text", placeholder="", style={'marginRight':'10px'}),
+
+        dcc.Input(id="input2", type="text", placeholder="", debounce=True),
+        html.Div(id="output"),
+    ]
 )
-def send_data(n_clicks):
-    if n_clicks:
-        # You can put your data generation logic here
-        data = {'message': 'Data from Plotly Dash Backend'}
-        return json.dumps(data)
 
-if __name__ == '__main__':
-    app.run_server(debug=True, use_reloader=False)
+
+@callback(
+    Output("output", "children"),
+    Input("input1", "value"),
+    Input("input2", "value"),
+)
+def update_output(input1, input2):
+    return f'Input 1 {input1} and Input 2 {input2}'
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
